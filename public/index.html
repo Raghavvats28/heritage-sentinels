@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-black text-white selection:bg-[#c5a043] selection:text-black">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HERITAGE SENTINELS | Evidence-Aware Preservation Intelligence</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- GSAP & ScrollTrigger CDNs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  
+  <!-- Three.js & OrbitControls CDNs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sentinel: {
+              obsidian: '#080809',
+              charcoal: '#121215',
+              sandstone: '#c5b394',
+              ivory: '#f4f1ea',
+              gold: '#c5a043',
+              bronze: '#8c6a46',
+              copper: '#b2653b',
+              blue: '#3d7fb8',
+              red: '#cc3f3f',
+              orange: '#d97706',
+              green: '#15803d',
+            }
+          },
+          fontFamily: {
+            serif: ['Cormorant Garamond', 'serif'],
+            sans: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Core Styles -->
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #080809;
+    }
+    
+    .glass {
+      background: rgba(18, 18, 21, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .glass-light {
+      background: rgba(244, 241, 234, 0.04);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .noise-overlay {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0%200%20200%20200'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter%20id='noiseFilter'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.75'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.015;
+      pointer-events: none;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080809;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1c1c22;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #c5a043;
+    }
+    
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      50% { transform: translateY(100%); }
+      100% { transform: translateY(-100%); }
+    }
+    
+    .animate-scan {
+      animation: scan 4s linear infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    .animate-float {
+      animation: float 5s ease-in-out infinite;
+    }
+    
+    .scanner-bar {
+      background: linear-gradient(to bottom, transparent, #c5a043 50%, transparent);
+    }
+  </style>
+</head>
+<body class="relative min-h-screen text-white overflow-x-hidden">
+  
+  <div class="fixed inset-0 noise-overlay z-50 pointer-events-none"></div>
+
+  <!-- NAVIGATION HEADER -->
+  <header id="main-header" class="fixed top-0 inset-x-0 h-20 z-40 transition-all duration-300 border-b border-transparent bg-transparent">
+    <div class="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2 group">
+        <span class="font-serif text-xl md:text-2xl tracking-[0.2em] text-white group-hover:text-sentinel-gold transition-colors duration-300">
+          HERITAGE <span class="text-sentinel-gold font-sans font-light">SENTINELS</span>
+        </span>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-8 text-xs font-sans uppercase tracking-widest text-zinc-400">
+        <a href="#story" class="hover:text-sentinel-gold transition-colors">Story</a>
+        <a href="#digital-twin" class="hover:text-sentinel-gold transition-colors">Digital Twin</a>
+        <a href="#ai-vision" class="hover:text-sentinel-gold transition-colors">Intelligence</a>
+        <a href="#risk-observatory" class="hover:text-sentinel-gold transition-colors">Observatory</a>
+        <a href="#impact" class="hover:text-sentinel-gold transition-colors">Impact</a>
+        <a href="#technology" class="hover:text-sentinel-gold transition-colors">Technology</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <!-- Judge Mode Switcher -->
+        <button id="tour-toggle-btn" onclick="toggleJudgeMode()" class="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-white hover:border-sentinel-gold hover:text-sentinel-gold text-[10px] font-sans font-bold uppercase tracking-widest cursor-pointer transition-all duration-300">
+          <i data-lucide="play" class="w-3 h-3"></i>
+          <span>Judge Mode</span>
+        </button>
+
+        <a href="#digital-twin" class="px-4 py-2 border border-sentinel-gold/30 hover:border-sentinel-gold bg-sentinel-gold/10 hover:bg-sentinel-gold hover:text-black text-[10px] font-sans font-bold uppercase tracking-widest transition-all duration-300 rounded">
+          ENTER SENTINEL
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 1. CINEMATIC SCROLL HERO SECTION -->
+  <div id="hero-scroll-container" class="relative w-full h-[300vh] bg-black">
+    <!-- Pinned viewport -->
+    <div class="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center">
+      
+      <!-- Video Element as Hero Visual -->
+      <video id="hero-video" class="absolute w-full h-full object-cover opacity-60 pointer-events-none" autoplay loop muted playsinline>
+        <source src="temple.mp4" type="video/mp4">
+        <!-- Fallback message -->
+        Your browser does not support the video tag.
+      </video>
+
+      <!-- Viewport overlays -->
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(8,8,9,0.95)_95%)] pointer-events-none z-10"></div>
+      <div class="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-sentinel-obsidian to-transparent pointer-events-none z-10"></div>
+      <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-sentinel-obsidian/70 to-transparent pointer-events-none z-10"></div>
+
+      <!-- TEXT SLIDES OVERLAYS -->
+      <!-- Slide 0: Hero title -->
+      <div id="hero-slide-0" class="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-6">
+        <span class="text-[10px] font-sans tracking-[0.4em] uppercase text-sentinel-gold mb-6 font-bold">
+          SMART INDIA HACKATHON 2026
+        </span>
+        <h1 class="font-serif text-5xl md:text-8xl tracking-tight text-white max-w-5xl leading-tight font-light">
+          Giving India&apos;s heritage a <br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-sentinel-ivory via-sentinel-gold to-sentinel-bronze italic font-serif">
+            digital memory.
+          </span>
+        </h1>
+        <p class="font-sans text-xs tracking-[0.2em] text-zinc-400 max-w-xl mt-8 leading-relaxed uppercase">
+          Evidence-aware intelligence for understanding, predicting, and preserving historic monuments.
+        </p>
+        <p class="text-[10px] font-sans text-zinc-600 tracking-widest uppercase mt-12 animate-bounce">
+          Scroll down to enter
+        </p>
+      </div>
+
+      <!-- Slide 1: Archival Memory -->
+      <div id="hero-slide-1" class="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-6 opacity-0 translate-y-10 pointer-events-none">
+        <span class="text-[10px] font-sans tracking-[0.4em] uppercase text-sentinel-gold mb-4 font-bold">
+          01 / ARCHIVAL MEMORY
+        </span>
+        <h2 class="font-serif text-4xl md:text-6xl text-white tracking-wide max-w-4xl leading-tight">
+          Connecting fragmented historical records.
+        </h2>
+        <p class="font-sans text-sm text-zinc-400 max-w-lg mt-6 leading-relaxed">
+          Heritage Sentinel references decades of manual inspection notes, excavation sketches, and catalog registries, forming an immutable baseline.
+        </p>
+      </div>
+
+      <!-- Slide 2: AI Scan -->
+      <div id="hero-slide-2" class="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-6 opacity-0 translate-y-10 pointer-events-none">
+        <span class="text-[10px] font-sans tracking-[0.4em] uppercase text-sentinel-gold mb-4 font-bold">
+          02 / COMPUTER VISION DECAY
+        </span>
+        <h2 class="font-serif text-4xl md:text-6xl text-white tracking-wide max-w-4xl leading-tight">
+          Detecting fissures and rising dampness.
+        </h2>
+        <p class="font-sans text-sm text-zinc-400 max-w-lg mt-6 leading-relaxed">
+          Vision Transformers segment sandstone texture changes dynamically, mapping deterioration indexes to coordinate anchors.
+        </p>
+      </div>
+
+      <!-- Slide 3: Resource Routing -->
+      <div id="hero-slide-3" class="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-6 opacity-0 translate-y-10 pointer-events-none">
+        <span class="text-[10px] font-sans tracking-[0.4em] uppercase text-sentinel-gold mb-4 font-bold">
+          03 / PRESERVATION ROUTING
+        </span>
+        <h2 class="font-serif text-4xl md:text-6xl text-white tracking-wide max-w-4xl leading-tight">
+          Human-in-the-loop expert review.
+        </h2>
+        <p class="font-sans text-sm text-zinc-400 max-w-lg mt-6 leading-relaxed">
+          Uncertain classifications trigger physical audits, organizing state department conservation budgets for high-priority P1 targets.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. THE EMOTIONAL HOOK -->
+  <section id="story" class="relative py-32 px-6 bg-black flex items-center justify-center border-t border-white/5">
+    <div class="max-w-4xl mx-auto text-center space-y-12">
+      <p class="text-zinc-500 font-sans tracking-[0.4em] text-xs uppercase font-bold">
+        A TEMPORAL LEDGER
+      </p>
+      <blockquote class="font-serif text-3xl md:text-5xl text-white leading-relaxed font-light">
+        &ldquo;A monument can survive for centuries. <br>
+        But the evidence of its condition can disappear in years.&rdquo;
+      </blockquote>
+      <div class="w-16 h-[1px] bg-sentinel-gold/40 mx-auto"></div>
+      <h3 class="font-serif text-2xl md:text-4xl text-sentinel-gold italic">
+        What if we could remember every change?
+      </h3>
+    </div>
+  </section>
+
+  <!-- 3. THE GAPS / PROBLEM SECTION -->
+  <section id="problem" class="py-24 md:py-32 px-6 bg-sentinel-charcoal border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl mb-16 space-y-4">
+        <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block font-bold">
+          THE CRITICAL HERITAGE GAP
+        </span>
+        <h2 class="font-serif text-4xl md:text-6xl text-white tracking-tight">
+          Heritage deteriorates 24/7.
+        </h2>
+        <p class="text-sm font-sans text-zinc-400 leading-relaxed max-w-xl">
+          But preservation intelligence is often periodic, fragmented, and reactive. Current software frameworks fail to establish historical correlation.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Card 1 -->
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 hover:border-sentinel-gold/20 hover:bg-white/[0.02] transition-all duration-300 space-y-4">
+          <span class="font-mono text-zinc-700 text-sm font-bold block">01 / WEATHERING</span>
+          <h3 class="font-serif text-2xl text-white">Continuous stress</h3>
+          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+            Pollution, humidity curves, seasonal temperature swings, and ground vibration patterns continuously stress monument foundations.
+          </p>
+        </div>
+        <!-- Card 2 -->
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 hover:border-sentinel-gold/20 hover:bg-white/[0.02] transition-all duration-300 space-y-4">
+          <span class="font-mono text-zinc-700 text-sm font-bold block">02 / DATA SILOS</span>
+          <h3 class="font-serif text-2xl text-white">Fragmented evidence</h3>
+          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+            Archival records, point clouds, IoT telemetry, and photogrammetry mesh updates operate in isolated vaults without structural linkage.
+          </p>
+        </div>
+        <!-- Card 3 -->
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 hover:border-sentinel-gold/20 hover:bg-white/[0.02] transition-all duration-300 space-y-4">
+          <span class="font-mono text-zinc-700 text-sm font-bold block">03 / DELAYED RESPONSE</span>
+          <h3 class="font-serif text-2xl text-white">Reactive inspections</h3>
+          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+            Remediation is typically scheduled only after major cracking splitting splits are visible, causing expensive and difficult repairs.
+          </p>
+        </div>
+        <!-- Card 4 -->
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 hover:border-sentinel-gold/20 hover:bg-white/[0.02] transition-all duration-300 space-y-4">
+          <span class="font-mono text-zinc-700 text-sm font-bold block">04 / LEDGER GAP</span>
+          <h3 class="font-serif text-2xl text-white">Missing timeline</h3>
+          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+            No continuous chronological logging makes it impossible to calculate erosion rates or check crack propagation speeds over decades.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. before/after transition text -->
+  <section class="py-24 px-6 bg-black border-t border-white/5 relative overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-sentinel-gold/5 rounded-full filter blur-[150px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto text-center space-y-10">
+      <span class="text-xs font-sans tracking-[0.2em] text-zinc-500 uppercase block font-bold">THE INTEGRATION SHIFT</span>
+      <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-8">
+        <div class="p-6 bg-white/[0.01] border border-white/5 rounded-xl text-zinc-500 text-xs font-sans space-y-2">
+          <h4 class="text-zinc-400 font-bold uppercase tracking-wider mb-2">FRAGMENTED INPUTS</h4>
+          <p>• Scattered Smartphone Images</p>
+          <p>• Isolated Excel Inspections</p>
+          <p>• Static Offline CAD models</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <span class="text-sentinel-gold font-serif text-2xl tracking-[0.3em] font-light">SENTINELS</span>
+          <div class="w-16 h-[1px] bg-sentinel-gold/30 my-2"></div>
+          <span class="text-[9px] text-zinc-600 font-mono">CHRONOLOGICAL DATABASE</span>
+        </div>
+        <div class="p-6 bg-sentinel-gold/[0.01] border border-sentinel-gold/20 rounded-xl text-sentinel-sandstone text-xs font-sans space-y-2">
+          <h4 class="text-sentinel-gold font-bold uppercase tracking-wider mb-2">CONNECTED EVIDENCE</h4>
+          <p>• Registered Digital Twins</p>
+          <p>• ViT Anomaly Detection</p>
+          <p>• Explainable Risk Prioritization</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. THE CORE CONCEPT -->
+  <section id="core-concept" class="py-24 md:py-32 px-6 bg-sentinel-charcoal border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-xl mx-auto mb-16 space-y-4">
+        <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block font-bold">SYSTEM WORKFLOW</span>
+        <h2 class="font-serif text-4xl md:text-5xl text-white tracking-tight">
+          A Digital Memory of Heritage
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
+        <!-- Vertical Tab List -->
+        <div class="space-y-2" id="concept-tabs-container">
+          <!-- Rendered dynamically or hardcoded for efficiency -->
+          <button onclick="switchConcept(0)" class="concept-tab-btn w-full text-left p-4 rounded-xl border bg-sentinel-gold text-black border-sentinel-gold font-bold font-sans text-xs tracking-wider flex justify-between">
+            <span>REMEMBER</span><span class="font-mono">01</span>
+          </button>
+          <button onclick="switchConcept(1)" class="concept-tab-btn w-full text-left p-4 rounded-xl border bg-white/[0.01] border-white/5 text-zinc-400 hover:border-white/20 hover:text-white font-sans text-xs tracking-wider flex justify-between">
+            <span>UNDERSTAND</span><span class="font-mono">02</span>
+          </button>
+          <button onclick="switchConcept(2)" class="concept-tab-btn w-full text-left p-4 rounded-xl border bg-white/[0.01] border-white/5 text-zinc-400 hover:border-white/20 hover:text-white font-sans text-xs tracking-wider flex justify-between">
+            <span>DETECT</span><span class="font-mono">03</span>
+          </button>
+          <button onclick="switchConcept(3)" class="concept-tab-btn w-full text-left p-4 rounded-xl border bg-white/[0.01] border-white/5 text-zinc-400 hover:border-white/20 hover:text-white font-sans text-xs tracking-wider flex justify-between">
+            <span>VERIFY</span><span class="font-mono">04</span>
+          </button>
+          <button onclick="switchConcept(4)" class="concept-tab-btn w-full text-left p-4 rounded-xl border bg-white/[0.01] border-white/5 text-zinc-400 hover:border-white/20 hover:text-white font-sans text-xs tracking-wider flex justify-between">
+            <span>PREDICT</span><span class="font-mono">05</span>
+          </button>
+          <button onclick="switchConcept(5)" class="concept-tab-btn w-full text-left p-4 rounded-xl border bg-white/[0.01] border-white/5 text-zinc-400 hover:border-white/20 hover:text-white font-sans text-xs tracking-wider flex justify-between">
+            <span>PRIORITIZE</span><span class="font-mono">06</span>
+          </button>
+          <button onclick="switchConcept(6)" class="concept-tab-btn w-full text-left p-4 rounded-xl border bg-white/[0.01] border-white/5 text-zinc-400 hover:border-white/20 hover:text-white font-sans text-xs tracking-wider flex justify-between">
+            <span>PRESERVE</span><span class="font-mono">07</span>
+          </button>
+        </div>
+
+        <!-- Details Container -->
+        <div class="lg:col-span-2 p-8 md:p-12 rounded-2xl glass border border-white/10 flex flex-col justify-between min-h-[320px] relative">
+          <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-sentinel-gold/5 rounded-full filter blur-[60px]"></div>
+          
+          <div class="space-y-6 z-10">
+            <span id="concept-badge" class="text-[9px] font-mono text-sentinel-gold border border-sentinel-gold/25 px-2.5 py-1 rounded bg-sentinel-gold/5 uppercase font-bold">
+              LIFECYCLE PHASE 01
+            </span>
+            <h3 id="concept-title" class="font-serif text-3xl md:text-4xl text-white tracking-wide">
+              Archival Baseline
+            </h3>
+            <p id="concept-desc" class="text-sm text-zinc-400 font-sans leading-relaxed">
+              Consolidates historical drawings, excavation logs, photographs, and ASI catalogs to map a monument&apos;s base condition profile.
+            </p>
+          </div>
+
+          <div class="pt-8 border-t border-white/5 flex justify-between items-center text-[10px] font-mono text-zinc-600 z-10">
+            <span>SYSTEM STATE: STABLE</span>
+            <span>SIH PRESCRIPTION SYSTEMS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. DIGITAL TWIN - THE 3D MONUMENT WORKSPACE -->
+  <section id="digital-twin" class="py-24 md:py-32 px-6 bg-black border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        
+        <!-- Left Controls Column (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+          <div>
+            <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block font-bold mb-2">
+              DIAGNOSTIC VISUALIZATION
+            </span>
+            <h2 class="font-serif text-4xl text-white tracking-tight leading-none">
+              Enter the Digital Twin
+            </h2>
+            <p class="text-xs text-zinc-500 font-sans leading-relaxed mt-4">
+              Switch analytical layers and scrub the temporal timeline (2018–2026) to watch structural cracks and moisture expansion live.
+            </p>
+          </div>
+
+          <!-- Layer Selection Buttons -->
+          <div class="p-5 rounded-2xl bg-white/[0.01] border border-white/5 space-y-4">
+            <span class="text-[9px] font-sans font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+              <i data-lucide="layers" class="w-3.5 h-3.5"></i> LAYER CONTROLS
+            </span>
+            <div class="space-y-1.5" id="layers-btn-group">
+              <button onclick="setAnalysisLayer('normal')" class="layer-btn w-full text-left px-3 py-2 rounded font-sans text-xs tracking-wider bg-sentinel-gold/25 text-sentinel-gold border-l-2 border-sentinel-gold cursor-pointer">
+                Normal View
+              </button>
+              <button onclick="setAnalysisLayer('cracks')" class="layer-btn w-full text-left px-3 py-2 rounded font-sans text-xs tracking-wider text-zinc-400 hover:text-white hover:bg-white/5 cursor-pointer">
+                Micro-Cracks (ViT)
+              </button>
+              <button onclick="setAnalysisLayer('moisture')" class="layer-btn w-full text-left px-3 py-2 rounded font-sans text-xs tracking-wider text-zinc-400 hover:text-white hover:bg-white/5 cursor-pointer">
+                Moisture Map (CNN)
+              </button>
+              <button onclick="setAnalysisLayer('damage')" class="layer-btn w-full text-left px-3 py-2 rounded font-sans text-xs tracking-wider text-zinc-400 hover:text-white hover:bg-white/5 cursor-pointer">
+                Surface Degradation
+              </button>
+              <button onclick="setAnalysisLayer('historical')" class="layer-btn w-full text-left px-3 py-2 rounded font-sans text-xs tracking-wider text-zinc-400 hover:text-white hover:bg-white/5 cursor-pointer">
+                Archival Comparison
+              </button>
+              <button onclick="setAnalysisLayer('risk')" class="layer-btn w-full text-left px-3 py-2 rounded font-sans text-xs tracking-wider text-zinc-400 hover:text-white hover:bg-white/5 cursor-pointer">
+                Risk Observatory
+              </button>
+            </div>
+          </div>
+
+          <!-- Timeline Year Scrub -->
+          <div class="p-5 rounded-2xl bg-white/[0.01] border border-white/5 space-y-4">
+            <span class="text-[9px] font-sans font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+              <i data-lucide="calendar" class="w-3.5 h-3.5"></i> TEMPORAL SCALE
+            </span>
+            <div class="space-y-3">
+              <div class="flex justify-between text-xs font-mono text-zinc-400">
+                <span>Registration Year</span>
+                <span id="timeline-year-badge" class="text-sentinel-gold font-bold">2026</span>
+              </div>
+              <input 
+                id="timeline-slider-input"
+                type="range"
+                min="2018"
+                max="2026"
+                step="2"
+                value="2026"
+                oninput="handleTimelineScrub(this.value)"
+                class="w-full accent-sentinel-gold h-1 bg-zinc-800 rounded cursor-pointer"
+              >
+              <div class="flex justify-between text-[9px] font-mono text-zinc-600">
+                <span>2018</span>
+                <span>2020</span>
+                <span>2022</span>
+                <span>2024</span>
+                <span>2026</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Center 3D Workspace Column (8 cols) -->
+        <div class="lg:col-span-8 space-y-6">
+          <!-- 3D Canvas element wrapper -->
+          <div class="relative w-full h-[400px] md:h-[500px] bg-sentinel-charcoal/[0.4] border border-white/5 rounded-2xl overflow-hidden shadow-inner">
+            <div class="absolute inset-0 m-auto w-80 h-80 rounded-full filter blur-[120px] bg-sentinel-gold/5 pointer-events-none z-0" id="monument-glow"></div>
+            
+            <div id="monument-canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing relative z-10"></div>
+            
+            <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none z-20">
+              <span class="text-[9px] font-sans tracking-widest text-zinc-500 bg-sentinel-obsidian/85 px-4 py-1.5 rounded-full border border-white/5 uppercase">
+                Drag to rotate • scroll to zoom • click red/blue spheres for active evidence
+              </span>
+            </div>
+          </div>
+
+          <!-- Sub Details -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Chronological Change Log -->
+            <div class="p-5 rounded-xl bg-white/[0.01] border border-white/5 space-y-3">
+              <span class="text-[9px] font-sans font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-1.5">
+                <i data-lucide="activity" class="w-3.5 h-3.5"></i> DETECTED SHIFTS METRICS
+              </span>
+              <div class="space-y-2">
+                <div class="flex justify-between text-xs">
+                  <span class="text-zinc-500 font-sans">Crack Expansion</span>
+                  <span id="metric-crack" class="font-mono text-white font-medium">+12.4 cm</span>
+                </div>
+                <div class="flex justify-between text-xs">
+                  <span class="text-zinc-500 font-sans">Moisture Dampness Area</span>
+                  <span id="metric-moisture" class="font-mono text-white font-medium">1.8 m²</span>
+                </div>
+                <div class="flex justify-between text-xs">
+                  <span class="text-zinc-500 font-sans">Surface Erosion (SfM diff)</span>
+                  <span id="metric-erosion" class="font-mono text-white font-medium">1.14 %</span>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-white/5 flex justify-between items-center text-[10px]">
+                <span id="metric-status" class="font-mono text-sentinel-red uppercase font-bold animate-pulse">P1 ACTION REQUIRED</span>
+                <span class="text-[9px] font-mono text-zinc-600">PROTOTYPE PLOT</span>
+              </div>
+            </div>
+
+            <!-- Decay Trend Graph -->
+            <div class="p-5 rounded-xl bg-white/[0.01] border border-white/5 flex flex-col justify-between">
+              <span class="text-[9px] font-sans font-bold tracking-widest text-zinc-500 uppercase block mb-3">
+                WEATHERING SLOPE GRAPH
+              </span>
+              
+              <div class="h-20 w-full relative">
+                <svg class="w-full h-full" viewBox="0 0 100 40">
+                  <path id="graph-path" d="M 10 35 L 30 32 L 50 26 L 70 18 L 90 8" fill="none" stroke="#c5a043" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="transition-all duration-700"></path>
+                  <circle cx="10" cy="35" r="1.5" fill="#c5a043"></circle>
+                  <circle cx="30" cy="32" r="1.5" fill="#c5a043" id="graph-c1"></circle>
+                  <circle cx="50" cy="26" r="1.5" fill="#c5a043" id="graph-c2"></circle>
+                  <circle cx="70" cy="18" r="1.5" fill="#c5a043" id="graph-c3"></circle>
+                  <circle cx="90" cy="8" r="1.5" fill="#cc3f3f" class="animate-ping" id="graph-c4"></circle>
+                </svg>
+              </div>
+
+              <div class="flex justify-between text-[9px] font-mono text-zinc-500 mt-2">
+                <span>2018</span>
+                <span>2022</span>
+                <span>2026</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 7. BEFORE / AFTER SPLIT SLIDER VIEW -->
+  <section class="py-24 px-6 bg-sentinel-charcoal border-t border-white/5">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center max-w-xl mx-auto mb-12 space-y-3">
+        <span class="text-xs font-sans tracking-[0.2em] text-sentinel-gold uppercase block font-bold">SPATIAL COMPILER</span>
+        <h3 class="font-serif text-3xl text-white tracking-wide">Temporal Difference Analysis</h3>
+        <p class="text-xs text-zinc-400 font-sans">
+          Drag the handle to compare the 2018 Archival Baseline against the 2026 detected anomalies.
+        </p>
+      </div>
+
+      <!-- Draggable Split container -->
+      <div 
+        id="split-slider-container"
+        onmousemove="handleSplitDrag(event)"
+        ontouchmove="handleSplitDrag(event)"
+        class="w-full h-[320px] md:h-[420px] relative rounded-2xl overflow-hidden border border-white/10 select-none cursor-ew-resize"
+      >
+        <!-- Left Side: baseline -->
+        <div class="absolute inset-0 bg-zinc-900 flex flex-col justify-center items-center">
+          <span class="text-8xl select-none opacity-30 filter blur-[1px]">🏛️</span>
+          <div class="absolute bottom-4 left-4 text-[9px] font-sans tracking-widest text-zinc-500 uppercase bg-black/60 px-3 py-1 rounded border border-white/5">
+            2018 ARCHIVAL BASELINE
+          </div>
+        </div>
+
+        <!-- Right Side: anomalies, sliding wrapper -->
+        <div id="split-slider-right" class="absolute inset-y-0 right-0 overflow-hidden bg-zinc-950 flex flex-col justify-center items-center" style="left: 50%;">
+          <div id="split-slider-inner-content" class="absolute inset-0 bg-zinc-950 flex flex-col justify-center items-center">
+            <!-- Anomaly visuals simulated -->
+            <span class="text-8xl select-none relative filter drop-shadow-[0_0_15px_rgba(204,63,63,0.35)]">
+              🏛️
+              <div class="absolute inset-x-0 bottom-2 h-8 bg-sentinel-blue/20 border border-sentinel-blue/40 rounded filter blur-sm"></div>
+              <div class="absolute top-1/4 left-1/3 w-0.5 h-16 bg-red-600/70 rotate-12"></div>
+            </span>
+            <div class="absolute bottom-4 right-4 text-[9px] font-sans tracking-widest text-sentinel-gold uppercase bg-black/60 px-3 py-1 rounded border border-sentinel-gold/20">
+              2026 ANOMALIES MAPPED
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider line -->
+        <div id="split-slider-handle" class="absolute inset-y-0 w-0.5 bg-sentinel-gold z-30" style="left: 50%;">
+          <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-sentinel-gold text-black flex items-center justify-center font-mono font-bold text-xs shadow-lg border border-white">
+            ↔
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. AI VISION SECTION -->
+  <section id="ai-vision" class="py-24 md:py-32 px-6 bg-black border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        
+        <!-- Scanner simulator -->
+        <div class="relative h-[320px] md:h-[420px] rounded-2xl bg-sentinel-charcoal border border-white/10 p-6 overflow-hidden flex flex-col justify-center items-center">
+          <div class="absolute left-0 w-full h-1 z-20 scanner-bar animate-scan"></div>
+          
+          <div class="text-center relative select-none">
+            <span class="text-[120px] block opacity-40">🗿</span>
+            
+            <div class="absolute top-8 right-0 p-2 border border-sentinel-red bg-sentinel-red/10 rounded flex flex-col items-start font-mono text-[9px] text-sentinel-red animate-pulse">
+              <span>[ FRACTURE_F1 ]</span>
+              <span>CONFIDENCE: 96%</span>
+            </div>
+
+            <div class="absolute bottom-4 left-2 p-2 border border-sentinel-blue bg-sentinel-blue/10 rounded flex flex-col items-start font-mono text-[9px] text-sentinel-blue">
+              <span>[ MOSS_GROWTH_M3 ]</span>
+              <span>CONFIDENCE: 84%</span>
+            </div>
+          </div>
+
+          <div class="absolute bottom-4 right-4 text-[9px] font-mono text-zinc-600 uppercase tracking-widest">
+            ViT texture segmentation sweep active
+          </div>
+        </div>
+
+        <!-- Text details -->
+        <div class="space-y-6">
+          <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block font-bold">INTELLIGENCE ENGINES</span>
+          <h2 class="font-serif text-4xl md:text-5xl text-white tracking-tight">
+            The Monument has Signals. <br>
+            Can AI see them?
+          </h2>
+          <p class="text-sm text-zinc-400 font-sans leading-relaxed">
+            By analyzing keyframes dynamically matching structural angles, our neural networks segment fractures, spalling deterioration, and localized biological growth with confidence factors.
+          </p>
+          
+          <div class="pt-6 border-t border-white/5 space-y-4 text-xs font-sans text-zinc-300">
+            <div class="flex items-center gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-sentinel-gold"></span>
+              <span>Edge-detection convolutions isolating mortar shifts</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-sentinel-gold"></span>
+              <span>Deep texture moisture index classifications</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-sentinel-gold"></span>
+              <span>Biological moss and weed patch boundary registration</span>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <span class="text-[9px] font-mono text-zinc-500 border border-white/10 px-3 py-1.5 rounded uppercase">
+              DEMO COMPUTER VISION MODE
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. EVIDENCE-AWARE AI CONFIG -->
+  <section id="evidence-engine" class="py-24 md:py-32 px-6 bg-sentinel-charcoal border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-xl mx-auto mb-16 space-y-3">
+        <span class="text-xs font-sans tracking-[0.2em] text-sentinel-gold uppercase block font-bold">TRUST CATEGORIZATION</span>
+        <h2 class="font-serif text-4xl md:text-5xl text-white tracking-tight">
+          AI should know when it is uncertain.
+        </h2>
+        <p class="text-xs text-zinc-400 font-sans">
+          We separate predictions to protect catalog accuracy. Uncertain reports require human confirmation.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- 1 -->
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 flex flex-col justify-between hover:border-sentinel-green/30 transition-all duration-300">
+          <div class="space-y-4">
+            <span class="text-[9px] font-mono text-sentinel-green bg-sentinel-green/10 border border-sentinel-green/20 px-2 py-0.5 rounded uppercase font-bold font-bold">VERIFIED</span>
+            <h3 class="font-serif text-2xl text-white">Documented</h3>
+            <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+              Approved by conservation heads or archived in historical structural diaries.
+            </p>
+          </div>
+          <div class="pt-6 border-t border-white/5 flex justify-between font-mono text-xs mt-6">
+            <span class="text-zinc-500">Confidence</span>
+            <span class="text-sentinel-green font-bold">100%</span>
+          </div>
+        </div>
+        <!-- 2 -->
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 flex flex-col justify-between hover:border-sentinel-blue/30 transition-all duration-300">
+          <div class="space-y-4">
+            <span class="text-[9px] font-mono text-sentinel-blue bg-sentinel-blue/10 border border-sentinel-blue/20 px-2 py-0.5 rounded uppercase font-bold">AI SWEEP</span>
+            <h3 class="font-serif text-2xl text-white">AI-Inferred</h3>
+            <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+              Detected by high-resolution texture models sweeping smartphone image sets.
+            </p>
+          </div>
+          <div class="pt-6 border-t border-white/5 flex justify-between font-mono text-xs mt-6">
+            <span class="text-zinc-500">Confidence</span>
+            <span class="text-sentinel-blue font-bold">89%</span>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 flex flex-col justify-between hover:border-sentinel-orange/30 transition-all duration-300">
+          <div class="space-y-4">
+            <span class="text-[9px] font-mono text-sentinel-orange bg-sentinel-orange/10 border border-sentinel-orange/20 px-2 py-0.5 rounded uppercase font-bold">AUDIT REQUIRED</span>
+            <h3 class="font-serif text-2xl text-white">Uncertain</h3>
+            <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+              Flagged for manual review due to low light, shadows, or conflicting telemetry.
+            </p>
+          </div>
+          <div class="pt-6 border-t border-white/5 flex justify-between font-mono text-xs mt-6">
+            <span class="text-zinc-500">Confidence</span>
+            <span class="text-sentinel-orange font-bold">64%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FIELD SCAN SIMULATOR -->
+  <section class="py-24 px-6 bg-black border-t border-white/5">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+      
+      <!-- Phone Mockup Container -->
+      <div class="lg:col-span-5 flex justify-center">
+        <div class="w-[280px] h-[520px] rounded-[36px] border-[6px] border-zinc-800 bg-[#080809] p-4 shadow-2xl relative overflow-hidden flex flex-col justify-between font-sans">
+          <div class="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-4 bg-zinc-800 rounded-full"></div>
+          
+          <div class="pt-4 pb-2 border-b border-white/5 flex justify-between items-center text-[9px] text-zinc-500 font-bold">
+            <span>FIELD SCANNER</span>
+            <span class="text-sentinel-green animate-pulse">● CONNECTED</span>
+          </div>
+
+          <div id="phone-content" class="flex-1 py-4 flex flex-col justify-center items-center text-center space-y-4 select-none">
+            <i data-lucide="smartphone" class="w-10 h-10 text-sentinel-gold animate-float"></i>
+            <div class="space-y-1">
+              <h4 class="text-white text-xs font-bold uppercase tracking-wider">PILOT_SITE_01</h4>
+              <p class="text-[10px] text-zinc-500">Puri, Odisha</p>
+            </div>
+            
+            <div class="w-full p-3 rounded-lg bg-white/[0.02] border border-white/5 space-y-1.5 text-left text-[9px] text-zinc-400">
+              <div class="flex justify-between"><span>Images captured</span><span class="text-white font-mono font-bold">24 / 40</span></div>
+              <div class="flex justify-between"><span>Vibration status</span><span class="text-sentinel-green font-bold">SAFE</span></div>
+              <div class="flex justify-between"><span>Luminance calibration</span><span class="text-sentinel-gold font-bold">NORMALIZED</span></div>
+            </div>
+            
+            <span id="phone-upload-status" class="text-[8px] font-mono text-zinc-500 block animate-pulse">READY TO UPLOAD</span>
+          </div>
+
+          <div class="pb-2 border-t border-white/5 pt-2 text-center text-[8px] text-zinc-600 font-bold uppercase tracking-wider">
+            ASI Diagnostics Terminal
+          </div>
+        </div>
+      </div>
+
+      <!-- Field Description -->
+      <div class="lg:col-span-7 space-y-6">
+        <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block font-bold">FIELD OFFICER WORKFLOW</span>
+        <h2 class="font-serif text-4xl md:text-5xl text-white tracking-tight leading-tight">
+          From smartphone scan to preservation action.
+        </h2>
+        <h3 class="font-serif text-2xl text-sentinel-gold font-light">
+          No heavy LiDAR or drones required for basic diagnostics.
+        </h3>
+        <p class="text-sm text-zinc-400 font-sans leading-relaxed">
+          Our cloud photogrammetry alignment algorithms let field workers upload smartphone image sequences directly on site. The baseline twin registers differences incrementally in minutes.
+        </p>
+
+        <!-- Simulated Submit Form -->
+        <form onsubmit="simulateFormUpload(event)" class="pt-4 max-w-md space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <input id="form-officer-id" type="text" required placeholder="Inspector ID (e.g. ASI-088)" class="bg-white/[0.02] border border-white/10 rounded px-4 py-3 text-xs focus:outline-none focus:border-sentinel-gold transition-colors tracking-wide w-full">
+            <select id="form-monument" class="bg-sentinel-obsidian border border-white/10 rounded px-4 py-3 text-xs focus:outline-none focus:border-sentinel-gold transition-colors w-full cursor-pointer">
+              <option>Konark Sun Temple Spire</option>
+              <option>Hampi Stone Chariot</option>
+              <option>Ajanta Caves Entrance</option>
+            </select>
+          </div>
+          <button type="submit" id="form-submit-btn" class="w-full py-3.5 bg-sentinel-gold hover:bg-sentinel-gold/90 text-black text-xs font-bold font-sans uppercase tracking-widest transition-all rounded shadow-md cursor-pointer">
+            DISPATCH SCAN TO CLOUD
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 11. RISK OBSERVATORY & EXPLAINABLE RISK CALCULATOR -->
+  <section id="risk-observatory" class="py-24 md:py-32 px-6 bg-sentinel-charcoal border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        
+        <!-- Health stats left -->
+        <div class="lg:col-span-5 space-y-6">
+          <div>
+            <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block font-bold mb-2">RISK ALLOCATION MATRIX</span>
+            <h2 class="font-serif text-4xl text-white tracking-tight">Where should experts look first?</h2>
+            <p class="text-xs text-zinc-500 font-sans leading-relaxed mt-4">
+              Our Risk Observatory dashboard monitors active telemetry logs and calculates structural decay scores to prioritize conservation budgets.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/[0.01] border border-white/5 space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-sans text-white">PILOT SITE HEALTH INDEX</span>
+              <span class="text-2xl font-serif text-sentinel-red font-bold animate-pulse">78 / 100</span>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="space-y-1">
+                <div class="flex justify-between text-[9px] text-zinc-400"><span>Foundation Vibration</span><span>82%</span></div>
+                <div class="w-full h-1 bg-zinc-900 rounded-full overflow-hidden">
+                  <div class="h-full bg-sentinel-green" style="width: 82%;"></div>
+                </div>
+              </div>
+              <div class="space-y-1">
+                <div class="flex justify-between text-[9px] text-zinc-400"><span>Surface Patina Erosion</span><span>71%</span></div>
+                <div class="w-full h-1 bg-zinc-900 rounded-full overflow-hidden">
+                  <div class="h-full bg-sentinel-gold" style="width: 71%;"></div>
+                </div>
+              </div>
+              <div class="space-y-1">
+                <div class="flex justify-between text-[9px] text-zinc-400"><span>Moisture Absorption</span><span>64%</span></div>
+                <div class="w-full h-1 bg-zinc-900 rounded-full overflow-hidden">
+                  <div class="h-full bg-sentinel-orange" style="width: 64%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculator right -->
+        <div class="lg:col-span-7 p-6 rounded-2xl glass border border-white/10 space-y-6">
+          <div>
+            <h3 class="font-serif text-2xl text-white tracking-wide">Explainable Risk Score</h3>
+            <p class="text-xs text-zinc-500 font-sans mt-2">
+              Adjust parameters to calculate priority: Severity × Rate of Change × Significance × Exposure = Priority Score.
+            </p>
+          </div>
+
+          <!-- Sliders -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-zinc-400"><span>Severity</span><span id="calc-val-sev" class="font-mono font-bold text-sentinel-gold">8.2</span></div>
+              <input type="range" min="1" max="10" step="0.1" value="8.2" oninput="updateRiskCalc('sev', this.value)" class="w-full accent-sentinel-gold h-1 bg-zinc-800 rounded cursor-pointer">
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-zinc-400"><span>Rate of Change</span><span id="calc-val-rate" class="font-mono font-bold text-sentinel-gold">7.4</span></div>
+              <input type="range" min="1" max="10" step="0.1" value="7.4" oninput="updateRiskCalc('rate', this.value)" class="w-full accent-sentinel-gold h-1 bg-zinc-800 rounded cursor-pointer">
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-zinc-400"><span>Significance</span><span id="calc-val-sig" class="font-mono font-bold text-sentinel-gold">9.6</span></div>
+              <input type="range" min="1" max="10" step="0.1" value="9.6" oninput="updateRiskCalc('sig', this.value)" class="w-full accent-sentinel-gold h-1 bg-zinc-800 rounded cursor-pointer">
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-zinc-400"><span>Exposure</span><span id="calc-val-exp" class="font-mono font-bold text-sentinel-gold">6.8</span></div>
+              <input type="range" min="1" max="10" step="0.1" value="6.8" oninput="updateRiskCalc('exp', this.value)" class="w-full accent-sentinel-gold h-1 bg-zinc-800 rounded cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Output Panel -->
+          <div class="p-4 rounded-xl border border-sentinel-gold/25 bg-sentinel-gold/[0.02] flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-[9px] font-sans text-zinc-500 uppercase tracking-widest font-bold">COMPUTED RISK SCORE</h4>
+              <span id="calc-risk-score" class="text-4xl font-serif text-white font-bold block mt-1">39.69</span>
+            </div>
+            <div id="calc-risk-badge" class="px-4 py-2 rounded border font-mono text-xs text-sentinel-red bg-sentinel-red/10 border-sentinel-red/20">
+              P1 - IMMEDIATE
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Priority Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
+        <div class="p-5 rounded-xl border border-white/5 bg-white/[0.01] hover:border-sentinel-gold/20 hover:bg-white/[0.02] transition-colors duration-300 space-y-3 cursor-pointer">
+          <span class="text-xs font-mono font-bold px-2 py-0.5 rounded text-sentinel-red bg-sentinel-red/10 border border-sentinel-red/20">P1</span>
+          <h4 class="font-serif text-base text-white">IMMEDIATE INSPECTION</h4>
+          <p class="text-[11px] text-zinc-400 font-sans leading-normal">Fissure widening rates > 2mm/year on high-load pillars under vibration.</p>
+        </div>
+        <div class="p-5 rounded-xl border border-white/5 bg-white/[0.01] hover:border-sentinel-gold/20 hover:bg-white/[0.02] transition-colors duration-300 space-y-3 cursor-pointer">
+          <span class="text-xs font-mono font-bold px-2 py-0.5 rounded text-sentinel-orange bg-sentinel-orange/10 border border-sentinel-orange/20">P2</span>
+          <h4 class="font-serif text-base text-white">SCHEDULED ASSESSMENT</h4>
+          <p class="text-[11px] text-zinc-400 font-sans leading-normal">Sub-surface rising moisture dampness requiring hydrophobic injections.</p>
+        </div>
+        <div class="p-5 rounded-xl border border-white/5 bg-white/[0.01] hover:border-sentinel-gold/20 hover:bg-white/[0.02] transition-colors duration-300 space-y-3 cursor-pointer">
+          <span class="text-xs font-mono font-bold px-2 py-0.5 rounded text-sentinel-blue bg-sentinel-blue/10 border border-sentinel-blue/20">P3</span>
+          <h4 class="font-serif text-base text-white">ACTIVE MONITORING</h4>
+          <p class="text-[11px] text-zinc-400 font-sans leading-normal">Moss and biological vegetation spreading across crown spires.</p>
+        </div>
+        <div class="p-5 rounded-xl border border-white/5 bg-white/[0.01] hover:border-sentinel-gold/20 hover:bg-white/[0.02] transition-colors duration-300 space-y-3 cursor-pointer">
+          <span class="text-xs font-mono font-bold px-2 py-0.5 rounded text-sentinel-green bg-sentinel-green/10 border border-sentinel-green/20">P4</span>
+          <h4 class="font-serif text-base text-white">ROUTINE OBSIDIAN</h4>
+          <p class="text-[11px] text-zinc-400 font-sans leading-normal">Minor surface erosion showing stabilized wear patterns.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. NATIONAL HERITAGE GRID MAP -->
+  <section id="national-grid" class="py-24 md:py-32 px-6 bg-black border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-5 space-y-6">
+          <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block font-bold">SCALABLE ARCHITECTURE</span>
+          <h2 class="font-serif text-4xl md:text-5xl text-white tracking-tight">
+            One Digital Memory. <br>
+            A National Heritage Grid.
+          </h2>
+          <p class="text-sm text-zinc-400 font-sans leading-relaxed">
+            Designed to scale from pilot sites to district networks, state registries, into a unified central command dashboard.
+          </p>
+          
+          <div class="space-y-4 pt-4 border-t border-white/5 text-xs font-sans text-zinc-500">
+            <div class="flex gap-4">
+              <span class="font-mono text-sentinel-gold font-bold">01</span>
+              <div>
+                <h4 class="text-white font-bold">PILOT MONUMENTS</h4>
+                <p class="text-[11px] text-zinc-600">Local photogrammetry logs synced at the site level.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="font-mono text-sentinel-gold font-bold">02</span>
+              <div>
+                <h4 class="text-white font-bold">STATE REGISTRIES</h4>
+                <p class="text-[11px] text-zinc-600">State departments tracking priority indices.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="font-mono text-sentinel-gold font-bold">03</span>
+              <div>
+                <h4 class="text-white font-bold">NATIONAL HERITAGE GRID</h4>
+                <p class="text-[11px] text-zinc-600">Nationwide ledger analyzing decay trends across climates.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SVG Map Card -->
+        <div class="lg:col-span-7 flex justify-center">
+          <div class="w-[320px] h-[400px] md:w-[420px] md:h-[480px] bg-sentinel-charcoal border border-white/10 rounded-2xl relative p-6 flex flex-col justify-between overflow-hidden">
+            <span class="text-[9px] font-sans tracking-widest text-zinc-500 uppercase block font-bold">
+              SCALABILITY MAP REPRESENTATION
+            </span>
+            
+            <div class="flex-1 flex justify-center items-center relative my-4">
+              <!-- Simplified India SVG outline -->
+              <svg class="w-52 h-64 text-zinc-800" viewBox="0 0 100 120" fill="currentColor">
+                <path d="M 45 10 L 50 15 L 53 12 L 57 15 L 60 10 L 58 5 L 48 4 L 45 10 Z" />
+                <path d="M 45 10 L 40 18 L 35 25 L 30 30 L 25 35 L 20 40 L 15 45 L 18 50 L 25 45 L 35 48 L 45 42 L 55 45 L 60 48 L 70 42 L 80 45 L 85 40 L 80 30 L 75 25 L 70 18 L 60 10 Z" opacity="0.3"/>
+                <path d="M 18 50 L 22 55 L 20 60 L 25 65 L 30 70 L 35 75 L 40 85 L 45 95 L 48 105 L 50 115 L 52 105 L 55 95 L 60 85 L 65 75 L 70 70 L 75 65 L 72 60 L 75 55 L 78 50 Z" opacity="0.3"/>
+              </svg>
+
+              <!-- Node overlays -->
+              <div onclick="alert('Delhi HQ active. Status: Connected.')" class="absolute top-1/4 left-1/2 w-4.5 h-4.5 rounded-full bg-sentinel-gold/25 border border-sentinel-gold flex items-center justify-center cursor-pointer hover:scale-125 transition-transform" title="Delhi National Grid Node">
+                <div class="w-1.5 h-1.5 rounded-full bg-sentinel-gold"></div>
+              </div>
+              <div onclick="alert('Konark Spire Node: P1 alert active. Selected report: Fissure.')" class="absolute top-1/2 left-2/3 w-4.5 h-4.5 rounded-full bg-sentinel-red/30 border border-sentinel-red flex items-center justify-center cursor-pointer hover:scale-125 transition-transform animate-pulse" title="East Hub - Konark Spire">
+                <div class="w-1.5 h-1.5 rounded-full bg-sentinel-red"></div>
+              </div>
+              <div onclick="alert('Hampi Pillars: P2 status scheduled.')" class="absolute bottom-1/4 left-1/2 w-4.5 h-4.5 rounded-full bg-sentinel-green/25 border border-sentinel-green flex items-center justify-center cursor-pointer hover:scale-125 transition-transform" title="South Hub - Hampi Pillars">
+                <div class="w-1.5 h-1.5 rounded-full bg-sentinel-green"></div>
+              </div>
+            </div>
+
+            <div class="text-[9px] font-mono text-zinc-600 flex justify-between border-t border-white/5 pt-2">
+              <span>ACTIVE pilot REGIONS: 4</span>
+              <span>DEMO GRID MAP</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. EDITORIAL IMPACT CARDS -->
+  <section id="impact" class="py-24 md:py-32 px-6 bg-sentinel-charcoal border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between md:items-end mb-16 gap-4">
+        <div>
+          <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block mb-3 font-bold">PRESERVATION MEASUREMENT</span>
+          <h2 class="font-serif text-4xl md:text-6xl text-white tracking-tight">Preservation Impact</h2>
+        </div>
+        <p class="text-xs font-sans tracking-widest text-zinc-500 uppercase">SIH 2026 BENCHMARKS</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 space-y-4">
+          <span class="text-sentinel-gold font-mono text-base block font-bold">01</span>
+          <h3 class="font-serif text-2xl text-white">Social & Cultural preservation</h3>
+          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+            Prevents irreversible collapse by mapping sub-surface dampness before cracks occur. Formulates a permanent digital memory for cultural assets.
+          </p>
+        </div>
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 space-y-4">
+          <span class="text-sentinel-gold font-mono text-base block font-bold">02</span>
+          <h3 class="font-serif text-2xl text-white">Operational & Budget optimization</h3>
+          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+            Automatically routes specialists to priority P1 structural anomalies, saving hundreds of inspection hours and routing budgets efficiently.
+          </p>
+        </div>
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 space-y-4">
+          <span class="text-sentinel-gold font-mono text-base block font-bold">03</span>
+          <h3 class="font-serif text-2xl text-white">Academic & Research datasets</h3>
+          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+            Compiles time-series datasets documenting sandstone erosion velocities under climate exposure index shifts for academic research.
+          </p>
+        </div>
+        <div class="p-8 rounded-2xl bg-white/[0.01] border border-white/5 space-y-4">
+          <span class="text-sentinel-gold font-mono text-base block font-bold">04</span>
+          <h3 class="font-serif text-2xl text-white">Governance & Disaster resilience</h3>
+          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+            Enables instant post-disaster integrity comparisons by checking rapid smartphone scans against baseline digital twins.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. TECHNICAL ARCHITECTURE -->
+  <section id="technology" class="py-24 md:py-32 px-6 bg-black border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        
+        <div class="p-6 rounded-2xl bg-sentinel-charcoal border border-white/10 space-y-6">
+          <span class="text-[9px] font-sans tracking-widest text-zinc-500 uppercase font-bold">
+            SYSTEM PIPELINE ARCHITECTURE
+          </span>
+          
+          <div class="space-y-4 text-xs font-sans">
+            <div class="p-4 rounded-xl bg-white/[0.01] border border-white/5 space-y-2">
+              <span class="text-[8px] font-mono text-sentinel-gold uppercase font-bold">1. INPUT LAYER</span>
+              <h4 class="text-white font-bold">Multi-Source Evidence</h4>
+              <p class="text-zinc-500 leading-relaxed text-[11px]">Smartphone images, coordinates (GPS), historical catalog files, and local IoT sensor logs.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-white/[0.01] border border-white/5 space-y-2">
+              <span class="text-[8px] font-mono text-sentinel-gold uppercase font-bold">2. INTELLIGENCE LAYER</span>
+              <h4 class="text-white font-bold">Edge-to-Cloud Diagnostics</h4>
+              <p class="text-zinc-500 leading-relaxed text-[11px] font-mono">COLMAP SfM point clouds · CNN mesh registration · Vision Transformers (ViT) sweeps · OCR text logs matching.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-white/[0.01] border border-white/5 space-y-2">
+              <span class="text-[8px] font-mono text-sentinel-gold uppercase font-bold">3. OUTPUT LAYER</span>
+              <h4 class="text-white font-bold">Actionable Dashboards</h4>
+              <p class="text-zinc-500 leading-relaxed text-[11px]">Three.js Digital Twin maps, temporal decay slope graphs, risk prioritization alerts.</p>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/5 flex justify-between text-xs text-zinc-400 font-mono">
+            <span>Stack</span>
+            <span class="text-sentinel-gold">Python · PyTorch · FastAPI · Django · React · PostgreSQL</span>
+          </div>
+        </div>
+
+        <div class="space-y-8">
+          <div>
+            <span class="text-xs font-sans tracking-[0.3em] text-sentinel-gold uppercase block font-bold mb-2">RESEARCH CREDIBILITY</span>
+            <h2 class="font-serif text-4xl text-white tracking-tight">Scientific backing.</h2>
+            <p class="text-sm text-zinc-400 font-sans leading-relaxed mt-4">
+              Integrates established algorithms: SfM (Westoby et al., 2012), NeRF (Mildenhall et al., 2020), and ViT fracture sweeps (Cha et al., 2017) using CIDOC-CRM ISO 21127 metadata schema.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 15. CHALLENGES & MITIGATIONS -->
+  <section class="py-24 px-6 bg-sentinel-charcoal border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-xl mx-auto mb-16 space-y-3">
+        <span class="text-xs font-sans tracking-[0.2em] text-sentinel-gold uppercase block font-bold">RELIABILITY METRICS</span>
+        <h2 class="font-serif text-4xl text-white tracking-wide">Challenges & Mitigations</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-xs font-sans">
+        <div class="p-6 rounded-xl bg-white/[0.01] border border-white/5 space-y-4">
+          <h4 class="font-serif text-lg text-white">AI Hallucinations</h4>
+          <p class="text-zinc-400">**Challenge**: Model misidentifying shadows or carvings as material fissures.</p>
+          <p class="text-sentinel-gold">**Mitigation**: Sorting predictions into trust levels: Documented (100%), Inferred (89%), Uncertain (64%).</p>
+        </div>
+        <div class="p-6 rounded-xl bg-white/[0.01] border border-white/5 space-y-4">
+          <h4 class="font-serif text-lg text-white">Compute Burden</h4>
+          <p class="text-zinc-400">**Challenge**: Rebuilding dense 3D meshes daily requires massive cloud cycles.</p>
+          <p class="text-sentinel-gold">**Mitigation**: Implementing incremental reconstruction, matching keyframes directly to baseline twins.</p>
+        </div>
+        <div class="p-6 rounded-xl bg-white/[0.01] border border-white/5 space-y-4">
+          <h4 class="font-serif text-lg text-white">Variable Lighting</h4>
+          <p class="text-zinc-400">**Challenge**: Changing shadows disrupt texture segmentation across seasons.</p>
+          <p class="text-sentinel-gold">**Mitigation**: Applying photometric normalization and texture color correction before model sweeps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16. FINAL SCENE -->
+  <section class="py-32 bg-black flex flex-col items-center text-center border-t border-white/5 select-none">
+    <span class="text-8xl block animate-float mb-6">🏛️</span>
+    <blockquote class="font-serif text-2xl md:text-3xl text-zinc-400 leading-relaxed max-w-2xl italic font-light">
+      &ldquo;A monument can survive for centuries. <br>
+      But the evidence of its condition can disappear in years.&rdquo;
+    </blockquote>
+    <h2 class="font-serif text-4xl md:text-6xl text-white tracking-[0.2em] font-light mt-8">
+      HERITAGE <span class="text-sentinel-gold font-sans font-bold">SENTINELS</span>
+    </h2>
+    <p class="font-sans text-[10px] text-sentinel-gold tracking-[0.3em] uppercase mt-4 font-bold">
+      SMART INDIA HACKATHON 2026
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 bg-sentinel-obsidian border-t border-white/5 text-center text-[10px] text-zinc-600 font-sans tracking-widest leading-relaxed uppercase">
+    PRODUCED BY TEAM HERITAGE SENTINELS FOR SIH 2026. ALL RIGHTS RESERVED.
+  </footer>
+
+  <!-- ==================================================== -->
+  <!-- EVIDENCE CONSOLE SIDEBAR DRAWER (Initially hidden) -->
+  <!-- ==================================================== -->
+  <div id="evidence-drawer" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
+    <!-- Backdrop -->
+    <div id="drawer-backdrop" onclick="closeEvidenceDrawer()" class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300 pointer-events-auto cursor-pointer"></div>
+    
+    <!-- Panel -->
+    <div id="drawer-panel" class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-sentinel-charcoal border-l border-white/10 shadow-2xl p-6 flex flex-col justify-between translate-x-full transition-transform duration-350 pointer-events-auto overflow-y-auto">
+      
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between pb-6 border-b border-white/10">
+        <div>
+          <span class="text-[9px] font-sans tracking-[0.2em] text-sentinel-gold uppercase block font-bold">HERITAGE SENTINEL</span>
+          <h2 class="font-serif text-lg text-white font-bold tracking-wide">EVIDENCE CONSOLE</h2>
+        </div>
+        <button onclick="closeEvidenceDrawer()" class="p-2 border border-white/5 hover:border-white/20 rounded text-zinc-400 hover:text-white cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Drawer Content -->
+      <div class="flex-1 py-6 space-y-6 overflow-y-auto no-scrollbar">
+        <!-- Badge -->
+        <div class="flex justify-between items-center text-[10px]">
+          <span id="drawer-badge-sev" class="font-sans font-bold px-2 py-0.5 rounded bg-sentinel-red/10 text-sentinel-red border border-sentinel-red/20 animate-pulse">P1 • IMMEDIATE</span>
+          <span id="drawer-badge-status" class="font-mono px-2 py-0.5 rounded bg-sentinel-blue/20 text-sentinel-blue">AI-Inferred</span>
+        </div>
+
+        <!-- Location -->
+        <div>
+          <h3 id="drawer-location" class="font-serif text-2xl text-white tracking-wide leading-tight">Shikhara Pillar - North East Elevation</h3>
+          <p class="text-xs text-zinc-400 font-sans mt-2">Anomaly: <span id="drawer-type" class="text-white capitalize">Crack</span> detected</p>
+        </div>
+
+        <!-- Confidence Meter -->
+        <div class="p-4 rounded-xl bg-white/[0.01] border border-white/5 space-y-3">
+          <div class="flex justify-between text-xs">
+            <span class="text-zinc-500">Evidence Confidence</span>
+            <span id="drawer-confidence" class="font-mono text-sentinel-blue font-bold">89%</span>
+          </div>
+          <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+            <div id="drawer-confidence-bar" class="h-full bg-sentinel-blue" style="width: 89%;"></div>
+          </div>
+        </div>
+
+        <!-- Metadata -->
+        <div class="space-y-4 text-xs font-sans">
+          <div class="flex gap-3">
+            <i data-lucide="map-pin" class="w-4 h-4 text-sentinel-gold flex-shrink-0 mt-0.5"></i>
+            <div>
+              <span class="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold">GPS Coordinates</span>
+              <p id="drawer-gps" class="text-zinc-300 font-mono mt-0.5">20.1245° N, 85.8792° E</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <i data-lucide="cpu" class="w-4 h-4 text-sentinel-gold flex-shrink-0 mt-0.5"></i>
+            <div>
+              <span class="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold">Detection Source</span>
+              <p id="drawer-source" class="text-zinc-300 mt-0.5">Vision Transformer (ViT) scan sequence #088</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <i data-lucide="clock" class="w-4 h-4 text-sentinel-gold flex-shrink-0 mt-0.5"></i>
+            <div>
+              <span class="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold">Timestamp Registered</span>
+              <p id="drawer-date" class="text-zinc-300 font-mono mt-0.5">2026-08-21</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <i data-lucide="file-text" class="w-4 h-4 text-sentinel-gold flex-shrink-0 mt-0.5"></i>
+            <div>
+              <span class="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold">Historical Context</span>
+              <p id="drawer-desc" class="text-zinc-400 mt-0.5 leading-relaxed">Fissure expanding along joints. Prior depth 2.1cm recorded in 2024.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verification Actions -->
+        <div id="drawer-actions-box" class="pt-6 border-t border-white/10 space-y-3">
+          <button onclick="verifyAnomalyRecord()" class="w-full py-3 bg-sentinel-gold hover:bg-sentinel-gold/90 text-black text-xs font-sans font-bold uppercase tracking-widest transition-all rounded flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> Verify & Document Record
+          </button>
+          <button onclick="flagAnomalyRecord()" class="w-full py-2.5 border border-white/10 hover:border-white/30 text-white text-xs font-sans font-bold uppercase tracking-widest transition-all rounded cursor-pointer">
+            Flag for Review
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="pt-6 border-t border-white/10 text-center text-[8px] text-zinc-600 font-sans tracking-widest uppercase">
+        SMART INDIA HACKATHON 2026 • REGISTRY SYSTEM
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- FLOATING TOUR CONTROLS PANEL (Judge Mode) -->
+  <!-- ==================================================== -->
+  <div id="tour-panel" class="fixed bottom-6 left-6 right-6 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[600px] z-50 glass rounded-2xl border border-sentinel-gold/30 shadow-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 hidden">
+    <!-- Info -->
+    <div class="flex items-start gap-3 w-full md:w-auto">
+      <div id="tour-step-badge" class="w-10 h-10 rounded-xl bg-sentinel-gold/15 border border-sentinel-gold/30 flex items-center justify-center text-sentinel-gold font-mono text-sm font-bold flex-shrink-0 mt-0.5 animate-pulse">
+        1/7
+      </div>
+      <div>
+        <span class="text-[9px] font-sans tracking-widest text-sentinel-gold uppercase font-bold block">SIH 2026 JUDGE GUIDED TOUR</span>
+        <h4 id="tour-title" class="text-white font-serif text-sm font-bold mt-0.5">The Critical Heritage Gap</h4>
+        <p id="tour-desc" class="text-[11px] text-zinc-400 font-sans mt-1 leading-normal max-w-sm">Monuments deteriorate 24/7, but inspection is manual and reactive.</p>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <div class="flex items-center gap-2 w-full md:w-auto justify-end border-t border-white/5 pt-3 md:pt-0 md:border-t-0">
+      <button onclick="handleTourPrev()" id="tour-prev-btn" class="p-2 border border-white/10 text-white rounded-lg hover:bg-white/5 transition-colors disabled:opacity-30 cursor-pointer">
+        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+      </button>
+      <button onclick="handleTourNext()" id="tour-next-btn" class="px-4 py-2 bg-sentinel-gold text-black text-[10px] font-sans font-bold uppercase tracking-wider rounded-lg hover:bg-white hover:text-black transition-all duration-300 flex items-center gap-1.5 cursor-pointer">
+        <span id="tour-next-label">Next Step</span>
+        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+      </button>
+      <button onclick="exitJudgeMode()" class="p-2 text-zinc-500 hover:text-sentinel-red transition-colors cursor-pointer" title="Exit Tour">
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- CORE JAVASCRIPT & THREE.JS ENGINE -->
+  <!-- ==================================================== -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Context Reports Mock Database
+    const ANOMALY_REPORTS = [
+      {
+        id: 'an-001',
+        type: 'crack',
+        location: 'Shikhara Pillar - North East Elevation',
+        confidence: 100,
+        status: 'Documented',
+        severity: 'P1 • IMMEDIATE',
+        dateDetected: '2026-08-10',
+        source: 'Historical archives + ASI 2024 inspection logs',
+        description: 'Structural fissure extending along the vertical joint of the stone pillar. Prior records indicate a depth of 2.1cm.',
+        gps: '20.1245° N, 85.8792° E',
+        provenance: 'ASI Inspection Log #108A, approved by conservation head J. Mehta.',
+        observation: 'Major stress fracture showing structural slip. Exposure to local railway vibration accelerates widening.'
+      },
+      {
+        id: 'an-002',
+        type: 'moisture',
+        location: 'Base Plinth - South-East outer wall',
+        confidence: 89,
+        status: 'AI-Inferred',
+        severity: 'P2 • SCHEDULED',
+        dateDetected: '2026-08-21',
+        source: 'Vision Transformer (ViT) scan from smartphone sequence #088',
+        description: 'Sub-surface rising dampness covering approximately 1.8 square meters. Elevated moisture index detected via texture color analysis.',
+        gps: '20.1246° N, 85.8793° E',
+        provenance: 'Cloud photogrammetry texture registration (Epoch 240, CNN align).',
+        observation: 'Rising dampness and salt efflorescence weakening the binding mortar of the outer sandstones.'
+      },
+      {
+        id: 'an-003',
+        type: 'growth',
+        location: 'Amalaka crowning - upper tiers',
+        confidence: 64,
+        status: 'Uncertain',
+        severity: 'P3 • MONITORING',
+        dateDetected: '2026-08-23',
+        source: 'Drone image capture (low resolution, variable light)',
+        description: 'Possible micro-vegetation and biological moss growth in the deep grooves. Visual confidence low due to shadows.',
+        gps: '20.1245° N, 85.8791° E',
+        provenance: 'Automated CNN sweep. Conflict with manual 2025 inspection logs (which reported dry mortar).',
+        observation: 'Potential seed germination in mortar gaps. Requires physical verification and manual weeding.'
+      }
+    ];
+
+    let activeReportId = null;
+
+    // Header Background Scroll Transition
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('main-header');
+      if (window.scrollY > 50) {
+        header.classList.add('bg-sentinel-obsidian/95', 'backdrop-blur-md', 'border-white/10');
+        header.classList.remove('bg-transparent', 'border-transparent');
+      } else {
+        header.classList.add('bg-transparent', 'border-transparent');
+        header.classList.remove('bg-sentinel-obsidian/95', 'backdrop-blur-md', 'border-white/10');
+      }
+    });
+
+    // ==========================================
+    // GSAP Scroll scrubbing for Hero video/slides
+    // ==========================================
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Bind overlays fade to scroll percentages
+    const heroTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#hero-scroll-container',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+      }
+    });
+
+    heroTl
+      .to('#hero-slide-0', { opacity: 0, y: -40, duration: 1 })
+      .to('#hero-slide-1', { opacity: 1, y: 0, duration: 1 })
+      .to('#hero-slide-1', { opacity: 0, y: -40, duration: 1 }, '+=1')
+      .to('#hero-slide-2', { opacity: 1, y: 0, duration: 1 })
+      .to('#hero-slide-2', { opacity: 0, y: -40, duration: 1 }, '+=1')
+      .to('#hero-slide-3', { opacity: 1, y: 0, duration: 1 });
+
+    // ==========================================
+    // Core Concept tab switches
+    // ==========================================
+    const conceptStepsData = [
+      { name: 'REMEMBER', title: 'Archival Memory', desc: 'Consolidates historical drawings, excavation logs, photographs, and ASI catalog registers to map a monument&apos;s base condition profile.' },
+      { name: 'UNDERSTAND', title: '3D Mesh Alignment', desc: 'Combines smartphone video photogrammetry into 3D point clouds, texture coordinates, and mesh structures automatically.' },
+      { name: 'DETECT', title: 'AI Anomaly Scan', desc: 'Vision Transformers scan sandstone patterns, automatically registering micro-cracks, spalling, and biological moss growth.' },
+      { name: 'VERIFY', title: 'Evidence Confidence', desc: 'Assesses evidence confidence. Discrepancies are flagged for human-in-the-loop validation, routing alerts to conservationists.' },
+      { name: 'PREDICT', title: 'Temporal Projection', desc: 'Models deterioration curves over time, computing crack widening speeds and moisture expansion trends.' },
+      { name: 'PRIORITIZE', title: 'Explainable Risk', desc: 'Runs calculations: Severity × Rate of Change × Significance × Exposure to sort damage from P1 (immediate) to P4.' },
+      { name: 'PRESERVE', title: 'Actionable Conservation', desc: 'Generates detailed intervention reports with exact coordinates, reducing inspection times from months to hours.' }
+    ];
+
+    function switchConcept(index) {
+      // Update tabs
+      const tabs = document.querySelectorAll('.concept-tab-btn');
+      tabs.forEach((tab, idx) => {
+        if (idx === index) {
+          tab.classList.add('bg-sentinel-gold', 'text-black', 'border-sentinel-gold', 'font-bold');
+          tab.classList.remove('bg-white/[0.01]', 'border-white/5', 'text-zinc-400');
+        } else {
+          tab.classList.add('bg-white/[0.01]', 'border-white/5', 'text-zinc-400');
+          tab.classList.remove('bg-sentinel-gold', 'text-black', 'border-sentinel-gold', 'font-bold');
+        }
+      });
+
+      // Update details
+      document.getElementById('concept-badge').innerText = `LIFECYCLE PHASE 0${index + 1}`;
+      document.getElementById('concept-title').innerText = conceptStepsData[index].title;
+      document.getElementById('concept-desc').innerHTML = conceptStepsData[index].desc;
+    }
+
+    // ==========================================
+    // Three.js 3D Monument Digital Twin setup
+    // ==========================================
+    let scene, camera, renderer, controls;
+    let templeGroup, plinthMesh, moistureMesh, crackGroup;
+    let hotspot1, hotspot2, hotspot3;
+    let activeLayer = 'normal';
+    let currentScrubYear = 2026;
+
+    const canvasContainer = document.getElementById('monument-canvas-container');
+
+    function init3DMonument() {
+      // Dimensions
+      const width = canvasContainer.clientWidth;
+      const height = canvasContainer.clientHeight || 450;
+
+      scene = new THREE.Scene();
+      
+      // Camera
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.set(0, 1.2, 4.5);
+
+      // Renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      canvasContainer.appendChild(renderer.domElement);
+
+      // Controls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableZoom = true;
+      controls.minDistance = 2.5;
+      controls.maxDistance = 8.0;
+      controls.minPolarAngle = Math.PI / 4;
+      controls.maxPolarAngle = Math.PI / 1.7;
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xe6d5be, 0.6);
+      directionalLight.position.set(-4, 6, -4);
+      scene.add(directionalLight);
+
+      const spotLight = new THREE.SpotLight(0xc5a043, 1.8);
+      spotLight.position.set(5, 10, 5);
+      spotLight.angle = 0.35;
+      spotLight.penumbra = 1.0;
+      scene.add(spotLight);
+
+      // Build procedurally carved sandstone temple model
+      templeGroup = new THREE.Group();
+      scene.add(templeGroup);
+
+      const stoneMat = new THREE.MeshStandardMaterial({
+        color: 0xa89475,
+        roughness: 0.95,
+        metalness: 0.05
+      });
+
+      // 1. Plinth Base
+      const plinthGeo = new THREE.BoxGeometry(3.0, 0.4, 3.0);
+      plinthMesh = new THREE.Mesh(plinthGeo, stoneMat);
+      plinthMesh.position.y = -1.2;
+      templeGroup.add(plinthMesh);
+
+      // 2. Stepped Spire Layers (Shikhara)
+      for (let i = 0; i < 8; i++) {
+        const height = 0.35;
+        const width = 2.3 - i * 0.24;
+        const posY = -1.0 + (i * height) + height / 2;
+        const tierGeo = new THREE.BoxGeometry(width, height, width);
+        const tierMesh = new THREE.Mesh(tierGeo, stoneMat);
+        tierMesh.position.y = posY;
+        tierMesh.name = `tier-${i}`;
+        templeGroup.add(tierMesh);
+      }
+
+      // 3. Amalaka Crowning
+      const crownGeo = new THREE.CylinderGeometry(0.48, 0.48, 0.2, 16);
+      const crownMesh = new THREE.Mesh(crownGeo, stoneMat);
+      crownMesh.position.y = 2.0;
+      templeGroup.add(crownMesh);
+
+      // 4. Kalasha Pot Spindle
+      const potGeo = new THREE.SphereGeometry(0.18, 16, 16);
+      const potMesh = new THREE.Mesh(potGeo, stoneMat);
+      potMesh.position.y = 2.22;
+      templeGroup.add(potMesh);
+
+      // 5. Four Corner Pillars
+      const pillarGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.8, 12);
+      const positions = [[-1.2, -0.6, -1.2], [-1.2, -0.6, 1.2], [1.2, -0.6, -1.2], [1.2, -0.6, 1.2]];
+      positions.forEach((pos, idx) => {
+        const pillar = new THREE.Mesh(pillarGeo, stoneMat);
+        pillar.position.set(pos[0], pos[1], pos[2]);
+        pillar.name = `pillar-${idx}`;
+        templeGroup.add(pillar);
+      });
+
+      // 6. Dynamic Crack overlay line (Pillar NW)
+      crackGroup = new THREE.Group();
+      crackGroup.position.set(1.2, -0.5, 1.2);
+      templeGroup.add(crackGroup);
+
+      const crackMat = new THREE.MeshBasicMaterial({ color: 0x1b1b1b });
+      const mainCrack = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.008, 0.5, 6), crackMat);
+      crackGroup.add(mainCrack);
+      
+      const branchCrack = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.003, 0.2, 6), crackMat);
+      branchCrack.position.set(0.05, 0.12, 0.05);
+      branchCrack.rotation.z = 0.35;
+      crackGroup.add(branchCrack);
+
+      // 7. Moisture Dampness Mesh Envelope
+      const moistureGeo = new THREE.BoxGeometry(3.02, 0.42, 3.02);
+      const moistureMat = new THREE.MeshPhysicalMaterial({
+        color: 0x1f3e5c,
+        transparent: true,
+        opacity: 0.7,
+        roughness: 0.15,
+        transmission: 0.35,
+        thickness: 0.1
+      });
+      moistureMesh = new THREE.Mesh(moistureGeo, moistureMat);
+      moistureMesh.position.y = -1.2;
+      templeGroup.add(moistureMesh);
+
+      // Hide analytical layers initially
+      crackGroup.visible = false;
+      moistureMesh.visible = false;
+
+      // 8. Hotspot nodes (Spheres)
+      const hotspotMat1 = new THREE.MeshBasicMaterial({ color: 0xcc3f3f, transparent: true, opacity: 0.8 });
+      hotspot1 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), hotspotMat1);
+      hotspot1.position.set(1.24, -0.5, 1.24);
+      hotspot1.userData = { reportId: 'an-001' };
+      scene.add(hotspot1);
+
+      const hotspotMat2 = new THREE.MeshBasicMaterial({ color: 0x3d7fb8, transparent: true, opacity: 0.8 });
+      hotspot2 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), hotspotMat2);
+      hotspot2.position.set(-1.1, -1.0, 1.1);
+      hotspot2.userData = { reportId: 'an-002' };
+      scene.add(hotspot2);
+
+      const hotspotMat3 = new THREE.MeshBasicMaterial({ color: 0xd97706, transparent: true, opacity: 0.8 });
+      hotspot3 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), hotspotMat3);
+      hotspot3.position.set(0, 1.8, 0);
+      hotspot3.userData = { reportId: 'an-003' };
+      scene.add(hotspot3);
+
+      // Raycaster for hotspot clicks
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
+      renderer.domElement.addEventListener('click', (e) => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects([hotspot1, hotspot2, hotspot3]);
+
+        if (intersects.length > 0) {
+          const clickedNode = intersects[0].object;
+          openEvidenceDrawer(clickedNode.userData.reportId);
+        }
+      });
+
+      // Animate Loop
+      function animate() {
+        requestAnimationFrame(animate);
+        
+        // Auto-rotation when not dragging
+        if (controls.state === -1) {
+          templeGroup.rotation.y += 0.0015;
+          
+          // Sync hotspots coordinates position rotation
+          hotspot1.position.x = 1.24 * Math.cos(templeGroup.rotation.y) - 1.24 * Math.sin(templeGroup.rotation.y);
+          hotspot1.position.z = 1.24 * Math.sin(templeGroup.rotation.y) + 1.24 * Math.cos(templeGroup.rotation.y);
+          
+          hotspot2.position.x = -1.1 * Math.cos(templeGroup.rotation.y) - 1.1 * Math.sin(templeGroup.rotation.y);
+          hotspot2.position.z = -1.1 * Math.sin(templeGroup.rotation.y) + 1.1 * Math.cos(templeGroup.rotation.y);
+        }
+
+        controls.update();
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // Resize window handler
+      window.addEventListener('resize', () => {
+        const w = canvasContainer.clientWidth;
+        const h = canvasContainer.clientHeight || 450;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+    }
+
+    // Set active layer in 3D
+    function setAnalysisLayer(layerName) {
+      activeLayer = layerName;
+      
+      // Update buttons style
+      const btns = document.querySelectorAll('.layer-btn');
+      btns.forEach((btn, idx) => {
+        const layers = ['normal', 'cracks', 'moisture', 'damage', 'historical', 'risk'];
+        if (layers[idx] === layerName) {
+          btn.className = "layer-btn w-full text-left px-3 py-2 rounded font-sans text-xs tracking-wider bg-sentinel-gold/25 text-sentinel-gold border-l-2 border-sentinel-gold cursor-pointer";
+        } else {
+          btn.className = "layer-btn w-full text-left px-3 py-2 rounded font-sans text-xs tracking-wider text-zinc-400 hover:text-white hover:bg-white/5 cursor-pointer";
+        }
+      });
+
+      // Update background glow color
+      const glow = document.getElementById('monument-glow');
+      if (layerName === 'risk') glow.style.background = 'radial-gradient(circle, rgba(204,63,63,0.5) 0%, rgba(0,0,0,0) 70%)';
+      else if (layerName === 'moisture') glow.style.background = 'radial-gradient(circle, rgba(61,127,184,0.5) 0%, rgba(0,0,0,0) 70%)';
+      else if (layerName === 'cracks') glow.style.background = 'radial-gradient(circle, rgba(197,160,67,0.35) 0%, rgba(0,0,0,0) 70%)';
+      else glow.style.background = 'radial-gradient(circle, rgba(140,106,70,0.4) 0%, rgba(0,0,0,0) 70%)';
+
+      // Reset material properties
+      const normalColor = 0xa89475;
+      const spallingColor = 0xcc3f3f;
+      const historicalColor = 0xc5a043;
+      const riskP1Color = 0xcc3f3f;
+      const riskP2Color = 0xd97706;
+
+      templeGroup.children.forEach(child => {
+        if (child.material) {
+          child.material.wireframe = false;
+          child.material.transparent = false;
+          child.material.opacity = 1.0;
+          child.material.color.setHex(normalColor);
+
+          // Custom overrides
+          if (layerName === 'historical') {
+            child.material.color.setHex(historicalColor);
+            if (child.name.includes('tier-') && parseInt(child.name.split('-')[1]) % 2 === 0) {
+              child.material.wireframe = true;
+            } else {
+              child.material.transparent = true;
+              child.material.opacity = 0.35;
+            }
+          } else if (layerName === 'damage') {
+            if (child.name === 'tier-2' || child.name === 'tier-4') {
+              child.material.color.setHex(spallingColor);
+            }
+          } else if (layerName === 'risk') {
+            if (child.name === 'tier-2' || child.name === 'pillar-0') {
+              child.material.color.setHex(riskP1Color); // P1 zones
+            } else if (child.name === 'tier-0') {
+              child.material.color.setHex(riskP2Color); // P2 zones
+            }
+          }
+        }
+      });
+
+      // Show/Hide overlays
+      crackGroup.visible = (layerName === 'cracks' || layerName === 'risk');
+      moistureMesh.visible = (layerName === 'moisture' || layerName === 'risk');
+    }
+
+    // Temporal timeline scrub
+    function handleTimelineScrub(year) {
+      currentScrubYear = parseInt(year);
+      document.getElementById('timeline-year-badge').innerText = year;
+      document.getElementById('timeline-slider-input').value = year;
+
+      const progress = (currentScrubYear - 2018) / 8; // 0 to 1
+
+      // Scale crack height & moisture plinth heights
+      if (crackGroup) {
+        crackGroup.scale.set(1, 0.2 + progress * 0.8, 1);
+      }
+      if (moistureMesh) {
+        moistureMesh.scale.y = 0.1 + progress * 0.9;
+        moistureMesh.material.opacity = 0.25 + progress * 0.55;
+      }
+
+      // Update indicators metrics
+      const crackM = progress === 0 ? '0.0 cm' : progress === 0.25 ? '+1.5 cm' : progress === 0.5 ? '+4.2 cm' : progress === 0.75 ? '+8.8 cm' : '+12.4 cm';
+      const moistM = progress === 0 ? '0.2 m²' : progress === 0.25 ? '0.4 m²' : progress === 0.5 ? '0.9 m²' : progress === 0.75 ? '1.3 m²' : '1.8 m²';
+      const erosM = progress === 0 ? '0.00 %' : progress === 0.25 ? '0.12 %' : progress === 0.5 ? '0.34 %' : progress === 0.75 ? '0.78 %' : '1.14 %';
+
+      document.getElementById('metric-crack').innerText = crackM;
+      document.getElementById('metric-moisture').innerText = moistM;
+      document.getElementById('metric-erosion').innerText = erosM;
+      
+      const statusBadge = document.getElementById('metric-status');
+      if (currentScrubYear === 2026) {
+        statusBadge.innerText = 'P1 ACTION REQUIRED';
+        statusBadge.className = "font-mono text-sentinel-red uppercase font-bold animate-pulse";
+      } else {
+        statusBadge.innerText = 'MONITORING STATE';
+        statusBadge.className = "font-mono text-zinc-500 uppercase font-bold";
+      }
+
+      // Update SVG path
+      const graph = document.getElementById('graph-path');
+      if (currentScrubYear === 2018) graph.setAttribute('d', 'M 10 35 L 30 35');
+      else if (currentScrubYear === 2020) graph.setAttribute('d', 'M 10 35 L 30 32 L 50 32');
+      else if (currentScrubYear === 2022) graph.setAttribute('d', 'M 10 35 L 30 32 L 50 26 L 70 26');
+      else if (currentScrubYear === 2024) graph.setAttribute('d', 'M 10 35 L 30 32 L 50 26 L 70 18 L 90 18');
+      else graph.setAttribute('d', 'M 10 35 L 30 32 L 50 26 L 70 18 L 90 8');
+
+      // Update dots visibility
+      document.getElementById('graph-c1').style.display = currentScrubYear >= 2020 ? 'block' : 'none';
+      document.getElementById('graph-c2').style.display = currentScrubYear >= 2022 ? 'block' : 'none';
+      document.getElementById('graph-c3').style.display = currentScrubYear >= 2024 ? 'block' : 'none';
+      document.getElementById('graph-c4').style.display = currentScrubYear >= 2026 ? 'block' : 'none';
+    }
+
+    // Initialize on load
+    window.onload = () => {
+      init3DMonument();
+    };
+
+    // ==========================================
+    // Interactive Evidence Console Sidebar Drawer
+    // ==========================================
+    function openEvidenceDrawer(reportId) {
+      activeReportId = reportId;
+      const report = ANOMALY_REPORTS.find(r => r.id === reportId);
+      if (!report) return;
+
+      // Populate text details
+      document.getElementById('drawer-location').innerText = report.location;
+      document.getElementById('drawer-type').innerText = report.type;
+      document.getElementById('drawer-confidence').innerText = `${report.confidence}%`;
+      document.getElementById('drawer-confidence-bar').style.width = `${report.confidence}%`;
+      document.getElementById('drawer-gps').innerText = report.gps;
+      document.getElementById('drawer-source').innerText = report.source;
+      document.getElementById('drawer-date').innerText = report.dateDetected;
+      document.getElementById('drawer-desc').innerText = report.description;
+
+      const sevBadge = document.getElementById('drawer-badge-sev');
+      sevBadge.innerText = report.severity;
+      if (report.severity.includes('P1')) {
+        sevBadge.className = 'font-sans font-bold px-2 py-0.5 rounded bg-sentinel-red/10 text-sentinel-red border border-sentinel-red/20 animate-pulse';
+      } else {
+        sevBadge.className = 'font-sans font-bold px-2 py-0.5 rounded bg-sentinel-orange/10 text-sentinel-orange border border-sentinel-orange/20';
+      }
+
+      const statusBadge = document.getElementById('drawer-badge-status');
+      statusBadge.innerText = report.status;
+      if (report.status === 'Documented') {
+        statusBadge.className = 'font-mono px-2 py-0.5 rounded bg-sentinel-green/20 text-sentinel-green';
+        document.getElementById('drawer-actions-box').style.display = 'none';
+      } else {
+        statusBadge.className = 'font-mono px-2 py-0.5 rounded bg-sentinel-blue/20 text-sentinel-blue';
+        document.getElementById('drawer-actions-box').style.display = 'block';
+      }
+
+      // Open drawer
+      const drawer = document.getElementById('evidence-drawer');
+      const backdrop = document.getElementById('drawer-backdrop');
+      const panel = document.getElementById('drawer-panel');
+
+      drawer.classList.remove('pointer-events-none');
+      backdrop.style.opacity = '1';
+      panel.style.transform = 'translateX(0)';
+    }
+
+    function closeEvidenceDrawer() {
+      const drawer = document.getElementById('evidence-drawer');
+      const backdrop = document.getElementById('drawer-backdrop');
+      const panel = document.getElementById('drawer-panel');
+
+      backdrop.style.opacity = '0';
+      panel.style.transform = 'translateX(100%)';
+      setTimeout(() => drawer.classList.add('pointer-events-none'), 300);
+    }
+
+    function verifyAnomalyRecord() {
+      if (!activeReportId) return;
+      const idx = ANOMALY_REPORTS.findIndex(r => r.id === activeReportId);
+      if (idx !== -1) {
+        ANOMALY_REPORTS[idx].status = 'Documented';
+        ANOMALY_REPORTS[idx].confidence = 100;
+        openEvidenceDrawer(activeReportId);
+
+        // Golden structural verification confetti
+        confetti({
+          particleCount: 100,
+          spread: 60,
+          origin: { x: 0.85, y: 0.5 },
+          colors: ['#c5a043', '#8c6a46', '#ffffff', '#3d7fb8']
+        });
+      }
+    }
+
+    function flagAnomalyRecord() {
+      if (!activeReportId) return;
+      const idx = ANOMALY_REPORTS.findIndex(r => r.id === activeReportId);
+      if (idx !== -1) {
+        ANOMALY_REPORTS[idx].status = 'Uncertain';
+        ANOMALY_REPORTS[idx].confidence = 50;
+        openEvidenceDrawer(activeReportId);
+      }
+    }
+
+    // ==========================================
+    // Before/After Draggable Split Slider
+    // ==========================================
+    function handleSplitDrag(e) {
+      const container = document.getElementById('split-slider-container');
+      const rightSide = document.getElementById('split-slider-right');
+      const handle = document.getElementById('split-slider-handle');
+      
+      const rect = container.getBoundingClientRect();
+      let clientX = e.clientX;
+      if (e.touches && e.touches[0]) clientX = e.touches[0].clientX;
+      
+      if (!clientX) return;
+      
+      const x = clientX - rect.left;
+      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+
+      rightSide.style.left = `${percentage}%`;
+      handle.style.left = `${percentage}%`;
+      
+      // Keep inner text matching container offsets
+      const innerContent = document.getElementById('split-slider-inner-content');
+      innerContent.style.width = `${rect.width}px`;
+      innerContent.style.transform = `translateX(-${percentage}%)`;
+    }
+
+    // ==========================================
+    // Field Scanner submit simulation
+    // ==========================================
+    function simulateFormUpload(e) {
+      e.preventDefault();
+      const idInput = document.getElementById('form-officer-id').value;
+      const monInput = document.getElementById('form-monument').value;
+      const submitBtn = document.getElementById('form-submit-btn');
+      const uploadStatus = document.getElementById('phone-upload-status');
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'DISPATCHING TENSORS...';
+
+      let step = 0;
+      const progressSteps = [
+        'Normalizing shadows...',
+        'Registering keyframes...',
+        'Sweeping textures (ViT)...',
+        'Finalizing registry...'
+      ];
+
+      const interval = setInterval(() => {
+        if (step >= progressSteps.length) {
+          clearInterval(interval);
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'DISPATCH SCAN TO CLOUD';
+          uploadStatus.innerText = 'SCAN FINALIZED: P1 REGISTERED';
+          uploadStatus.className = "text-[8px] font-mono text-sentinel-green block animate-pulse";
+          
+          confetti({
+            particleCount: 50,
+            spread: 45,
+            origin: { y: 0.6 }
+          });
+          return;
+        }
+        uploadStatus.innerText = progressSteps[step];
+        step++;
+      }, 1000);
+    }
+
+    // ==========================================
+    // Explainable Risk Calculator
+    // ==========================================
+    let riskParams = { sev: 8.2, rate: 7.4, sig: 9.6, exp: 6.8 };
+
+    function updateRiskCalc(param, val) {
+      riskParams[param] = parseFloat(val);
+      document.getElementById(`calc-val-${param}`).innerText = val;
+
+      const score = (riskParams.sev * riskParams.rate * riskParams.sig * riskParams.exp) / 100;
+      document.getElementById('calc-risk-score').innerText = score.toFixed(2);
+
+      const badge = document.getElementById('calc-risk-badge');
+      if (score > 35) {
+        badge.innerText = 'P1 - IMMEDIATE';
+        badge.className = "px-4 py-2 rounded border font-mono text-xs text-sentinel-red bg-sentinel-red/10 border-sentinel-red/20";
+      } else if (score > 20) {
+        badge.innerText = 'P2 - SCHEDULED';
+        badge.className = "px-4 py-2 rounded border font-mono text-xs text-sentinel-orange bg-sentinel-orange/10 border-sentinel-orange/20";
+      } else if (score > 10) {
+        badge.innerText = 'P3 - ACTIVE';
+        badge.className = "px-4 py-2 rounded border font-mono text-xs text-sentinel-blue bg-sentinel-blue/10 border-sentinel-blue/20";
+      } else {
+        badge.innerText = 'P4 - ROUTINE';
+        badge.className = "px-4 py-2 rounded border font-mono text-xs text-sentinel-green bg-sentinel-green/10 border-sentinel-green/20";
+      }
+    }
+
+    // ==========================================
+    // SIH 2026 Guided Judge Tour controls
+    // ==========================================
+    let isTourActive = false;
+    let tourStep = 1;
+
+    const tourStepsConfig = [
+      { step: 1, targetId: 'problem', title: 'The Critical Heritage Gap', desc: 'Continuous weathering damages structures 24/7, but inspection is manual and reactive.' },
+      { step: 2, targetId: 'core-concept', title: 'The Solution: Digital Memory', desc: 'Connecting fragmented evidence through the chronological sequence: Remember → Understand → Preserve.' },
+      { step: 3, targetId: 'digital-twin', title: 'Interactive 3D Digital Twin', desc: 'Scrub the temporal timeline (2018–2026) to see cracks expand, or toggle analysis overlays.' },
+      { step: 4, targetId: 'ai-vision', title: 'AI Anomaly Scanner', desc: 'Vision Transformers scan surface textures, segmenting cracks, moss, and dampness automatically.' },
+      { step: 5, targetId: 'evidence-engine', title: 'Evidence-Aware Trust Engine', desc: 'Predictions are grouped into Documented, Inferred, and Uncertain layers. Clicking hotspots opens the drawer.' },
+      { step: 6, targetId: 'risk-observatory', title: 'Explainable Risk Indexing', desc: 'Priority routing is computed directly based on Severity × Rate of Change × Significance × Exposure.' },
+      { step: 7, targetId: 'national-grid', title: 'National Heritage Grid', desc: 'Demonstrates scalability from pilot structures to district networks and country-wide portals.' }
+    ];
+
+    function toggleJudgeMode() {
+      if (isTourActive) exitJudgeMode();
+      else startJudgeMode();
+    }
+
+    function startJudgeMode() {
+      isTourActive = true;
+      document.getElementById('tour-panel').classList.remove('hidden');
+      document.getElementById('tour-toggle-btn').className = "hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sentinel-gold bg-sentinel-gold text-black hover:bg-white hover:border-white text-[10px] font-sans font-bold uppercase tracking-widest cursor-pointer transition-all duration-300";
+      executeTourStep(1);
+    }
+
+    function exitJudgeMode() {
+      isTourActive = false;
+      document.getElementById('tour-panel').classList.add('hidden');
+      document.getElementById('tour-toggle-btn').className = "hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-white hover:border-sentinel-gold hover:text-sentinel-gold text-[10px] font-sans font-bold uppercase tracking-widest cursor-pointer transition-all duration-300";
+      closeEvidenceDrawer();
+    }
+
+    function handleTourNext() {
+      if (tourStep >= 7) {
+        exitJudgeMode();
+        return;
+      }
+      tourStep++;
+      executeTourStep(tourStep);
+    }
+
+    function handleTourPrev() {
+      if (tourStep <= 1) return;
+      tourStep--;
+      executeTourStep(tourStep);
+    }
+
+    function executeTourStep(stepNum) {
+      tourStep = stepNum;
+      const config = tourStepsConfig[stepNum - 1];
+
+      // Update Panel UI
+      document.getElementById('tour-step-badge').innerText = `${stepNum}/7`;
+      document.getElementById('tour-title').innerText = config.title;
+      document.getElementById('tour-desc').innerText = config.desc;
+      document.getElementById('tour-next-label').innerText = stepNum === 7 ? 'Finish' : 'Next Step';
+      
+      const prevBtn = document.getElementById('tour-prev-btn');
+      if (stepNum === 1) prevBtn.setAttribute('disabled', 'true');
+      else prevBtn.removeAttribute('disabled');
+
+      // Scroll to target
+      const target = document.getElementById(config.targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // Actions at specific steps
+      if (stepNum === 3) {
+        // Toggle Cracks layer and scrub to 2026
+        setTimeout(() => {
+          setAnalysisLayer('cracks');
+          handleTimelineScrub(2026);
+        }, 800);
+      } else if (stepNum === 5) {
+        // Open Anomaly Drawer with first report
+        setTimeout(() => {
+          openEvidenceDrawer('an-002');
+        }, 800);
+      } else {
+        closeEvidenceDrawer();
+      }
+    }
+  </script>
+</body>
+</html>
