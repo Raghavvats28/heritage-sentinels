@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: heritage-sentinels-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: STORAGE_MODE
+        value: local
+      - key: OPEN_METEO_ENABLED
+        value: "true"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
