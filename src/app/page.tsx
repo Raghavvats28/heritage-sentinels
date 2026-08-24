@@ -179,7 +179,7 @@ export default function Home() {
           </div>
 
           <p className="text-[10px] font-sans text-zinc-600 tracking-widest uppercase mt-12 animate-bounce">
-            Scroll to begin spatial registration
+            Scroll to begin heritage inspection
           </p>
         </div>
 

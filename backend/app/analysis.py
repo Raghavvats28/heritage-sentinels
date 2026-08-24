@@ -78,7 +78,23 @@ def openai_vision(path: str, site_hint: str | None) -> dict[str, Any] | None:
         text = response.output_text.strip()
         if text.startswith("```"):
             text = text.strip("`").replace("json", "", 1).strip()
-        return json.loads(text)
+        result = json.loads(text)
+        # Keep the frontend/risk engine stable even when the multimodal model
+        # returns detailed observation objects instead of the local CV score map.
+        raw_observations = result.get("observations", [])
+        if isinstance(raw_observations, list):
+            score_map: dict[str, float] = {}
+            for item in raw_observations:
+                if not isinstance(item, dict):
+                    continue
+                kind = str(item.get("type", "observation")).strip().lower().replace(" ", "_")
+                severity = float(item.get("severity_0_100", 0) or 0)
+                score_map[kind] = max(score_map.get(kind, 0), severity)
+            result["observation_details"] = raw_observations
+            result["observations"] = score_map
+        elif not isinstance(raw_observations, dict):
+            result["observations"] = {}
+        return result
     except Exception as exc:
         return {"error": f"vision_provider_failed: {type(exc).__name__}"}
 

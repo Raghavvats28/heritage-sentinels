@@ -109,8 +109,11 @@ async def create_inspection(
     risk, drivers = score_risk(heuristic, env)
     recommendations = ["Repeat inspection from the same viewpoint", "Validate AI flags with a qualified conservator"]
     if risk >= 60: recommendations.insert(0, "Prioritize expert inspection of high-risk areas")
-    historical_visuals = [{"year": year, "image_url": f"/api/v1/files/{Path(historical_image(path, year)).name}", "label": "AI-assisted historical visualization"} for year in (1800, 1950)]
-    report = {"risk_score": risk, "risk_band": "HIGH" if risk >= 60 else "MODERATE" if risk >= 30 else "LOW", "drivers": drivers, "recommendations": recommendations, "historical_visuals": historical_visuals, "evidence_policy": "Documented evidence is separated from inferred observations and projected scenarios."}
+    # Do not manufacture a "historical" image from the current upload. A transformed
+    # current photo is not historical evidence. Verified archival images can be added
+    # later through HistoricalEvidence.image_url and are rendered separately.
+    historical_visuals: list[dict] = []
+    report = {"risk_score": risk, "risk_band": "HIGH" if risk >= 60 else "MODERATE" if risk >= 30 else "LOW", "drivers": drivers, "recommendations": recommendations, "historical_visuals": historical_visuals, "evidence_policy": "Documented evidence, AI-inferred observations, and projected scenarios are kept separate. No historical image is generated from the current upload."}
     inspection.report_json = report
     db.commit()
     build_predictions(db, inspection, path, risk, drivers)
