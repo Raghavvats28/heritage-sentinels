@@ -8,8 +8,8 @@ from PIL import Image, ImageEnhance, ImageFilter, ImageDraw
 import httpx
 from sqlalchemy.orm import Session
 from config import get_settings
-from .models import Inspection, Site, Prediction
-from .storage import save_bytes
+from models import Inspection, Site, Prediction
+from storage import save_bytes
 
 settings = get_settings()
 
