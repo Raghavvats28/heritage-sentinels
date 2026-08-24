@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_env: str = "development"
     database_url: str = "sqlite:///./heritage.db"
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = "http://localhost:3000,https://heritage-sentinels.vercel.app"
     storage_mode: str = "local"
     storage_dir: str = "./data"
     max_upload_mb: int = 12
