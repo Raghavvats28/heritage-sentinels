@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from .db import Base
+from db import Base
 
 class Site(Base):
     __tablename__ = "sites"
