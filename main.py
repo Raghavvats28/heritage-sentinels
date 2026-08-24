@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from analysis import build_predictions, get_environment, historical_image, heuristic_vision, identify_site_from_text, openai_vision, score_risk
-from .config import get_settings
+from config import get_settings
 from .db import Base, SessionLocal, engine, get_db
 from .models import HistoricalEvidence, Inspection, Prediction, Site
 from .schemas import EvidenceOut, InspectionOut, PredictionOut, SiteOut
