@@ -1,6 +1,6 @@
 from pathlib import Path
 import uuid
-from .config import get_settings
+from config import get_settings
 
 settings = get_settings()
 
