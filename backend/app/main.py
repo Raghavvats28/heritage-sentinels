@@ -38,7 +38,7 @@ def risk_category(score: float) -> dict[str, str]:
 
 
 app = FastAPI(title="Heritage Sentinels API", version="1.0.0")
-app.add_middleware(CORSMiddleware, allow_origins=settings.cors_list, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=list(dict.fromkeys(settings.cors_list + ["https://heritage-sentinels.vercel.app"])), allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 @app.get("/health")
 def health():
